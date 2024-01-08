@@ -1,0 +1,103 @@
+[project]
+name = "wagtaildraftsharing"
+version = "0.0.4"
+description = "Share wagtail drafts with private URLs."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "CC0"}
+authors = [
+    {name = "Shohan Dutta Roy", email = "shohanduttaroy99@gmail.com" }
+]
+dependencies = [
+    "wagtail>=5.1",
+]
+classifiers = [
+    "Framework :: Django",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.2",
+    "Framework :: Wagtail",
+    "Framework :: Wagtail :: 5",
+    "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+    "License :: Public Domain",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+
+[project.optional-dependencies]
+testing = [
+    "coverage[toml]",
+    "wagtail-factories",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/KIRA009/wagtaildraftsharing"
+"Bug Reports" = "https://github.com/KIRA009/wagtaildraftsharing/issues"
+"Source" = "https://github.com/KIRA009/wagtaildraftsharing"
+
+[build-system]
+requires = ["setuptools>=43.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-data]
+inventory = [
+    "templates/wagtailadmin/*",
+    "static/wagtaildraftsharing/*",
+]
+
+[tool.black]
+line-length = 79
+target-version = ["py38"]
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs
+    | \.git
+    | \.tox
+    | \*.egg-info
+    | _build
+    | build
+    | dist
+    | migrations
+  )/
+)
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 79
+lines_after_imports = 2
+skip = [".tox", "migrations", ".venv", "venv"]
+known_django = ["django"]
+known_wagtail = ["wagtail"]
+default_section = "THIRDPARTY"
+sections = [
+    "STDLIB",
+    "DJANGO",
+    "WAGTAIL",
+    "THIRDPARTY",
+    "FIRSTPARTY",
+    "LOCALFOLDER"
+]
+
+[tool.ruff]
+exclude = [
+    ".git",
+    ".tox",
+    "__pycache__",
+    "*/migrations/*.py",
+    "docs",
+    ".venv",
+    "venv",
+]
+ignore = []
+select = [
+    "E",
+    "F",
+    "W",
+]
+
+[tool.coverage.run]
+omit = [
+    "wagtaildraftsharing/tests/*",
+]

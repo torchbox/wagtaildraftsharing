@@ -1,0 +1,4 @@
+include LICENSE
+include README.md
+recursive-include wagtaildraftsharing/templates *.html
+recursive-include wagtaildraftsharing/static *.css *.js *.png *.gif *.jpg *.svg

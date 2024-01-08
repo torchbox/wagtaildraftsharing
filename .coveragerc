@@ -1,0 +1,6 @@
+[run]
+source=
+    wagtaildraftsharing
+omit=
+    setup.py
+    wagtaildraftsharing/tests/*
