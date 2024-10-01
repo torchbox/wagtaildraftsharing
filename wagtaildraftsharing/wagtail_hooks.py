@@ -5,8 +5,8 @@ from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-
 from wagtail import hooks
+from wagtail.admin.action_menu import ActionMenuItem
 from wagtail.snippets.models import register_snippet
 
 from wagtaildraftsharing.actions import (
@@ -14,12 +14,11 @@ from wagtaildraftsharing.actions import (
 )
 from wagtaildraftsharing.snippets import WagtaildraftsharingLinkSnippet
 
+from . import settings as draftsharing_settings
 
 register_snippet(WagtaildraftsharingLinkSnippet)
 
-hooks.register("register_log_actions")(
-    register_wagtaildraftsharing_log_actions
-)
+hooks.register("register_log_actions")(register_wagtaildraftsharing_log_actions)
 
 
 @hooks.register("insert_global_admin_js")
@@ -44,3 +43,25 @@ def editor_js():
             })}
         </script>"""
     )
+
+
+class DraftsharingPageActionMenuItem(ActionMenuItem):
+    order = 1600
+    name = "action-draftsharing"
+    icon_name = "view"
+    label = draftsharing_settings.WAGTAIL_DRAFTSHARING_MENU_ITEM_LABEL
+
+    template_name = "wagtaildraftsharing/action_menu_item.html"
+
+    def get_context_data(self, parent_context):
+        context_data = super().get_context_data(parent_context)
+        context_data["revision"] = context_data["page"].latest_revision
+        return context_data
+
+    def is_shown(self, context):
+        return context["page"].has_unpublished_changes
+
+
+@hooks.register("register_page_action_menu_item")
+def register_draftsharing_page_action_menu_item():
+    return DraftsharingPageActionMenuItem()
