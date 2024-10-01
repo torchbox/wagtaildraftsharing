@@ -7,7 +7,6 @@ from django.utils.decorators import method_decorator
 from django.utils.timezone import now as datetime_now
 from django.utils.timezone import timedelta
 from django.views.generic import CreateView
-
 from wagtail.admin.auth import user_has_any_page_permission, user_passes_test
 from wagtail.admin.views.generic.preview import PreviewRevision
 from wagtail.log_actions import log
@@ -16,7 +15,6 @@ from wagtail.models import Page, Revision
 from wagtaildraftsharing.actions import WAGTAILDRAFTSHARING_CREATE_SHARING_LINK
 from wagtaildraftsharing.forms import CreateWagtaildraftsharingLinkForm
 from wagtaildraftsharing.models import WagtaildraftsharingLink
-
 
 DEFAULT_MAX_AGE = 7 * 24 * 60 * 60  # 7 days
 max_age = getattr(settings, "WAGTAILDRAFTSHARING_MAX_AGE", DEFAULT_MAX_AGE)
@@ -28,7 +26,9 @@ class SharingLinkView(PreviewRevision):
         now = datetime_now()
 
         sharing_link = get_object_or_404(
-            WagtaildraftsharingLink, key=key, is_active=True
+            WagtaildraftsharingLink,
+            key=key,
+            is_active=True,
         )
         if sharing_link.active_until and sharing_link.active_until < now:
             sharing_link.is_active = False
@@ -43,9 +43,7 @@ class SharingLinkView(PreviewRevision):
         return get_object_or_404(Page, id=self.pk).specific
 
 
-@method_decorator(
-    user_passes_test(user_has_any_page_permission), name="dispatch"
-)
+@method_decorator(user_passes_test(user_has_any_page_permission), name="dispatch")
 class CreateSharingLinkView(CreateView):
     model = WagtaildraftsharingLink
     form_class = CreateWagtaildraftsharingLinkForm
