@@ -1,6 +1,5 @@
 import uuid
 
-from django.conf import settings
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
@@ -16,8 +15,9 @@ from wagtaildraftsharing.actions import WAGTAILDRAFTSHARING_CREATE_SHARING_LINK
 from wagtaildraftsharing.forms import CreateWagtaildraftsharingLinkForm
 from wagtaildraftsharing.models import WagtaildraftsharingLink
 
-DEFAULT_MAX_AGE = 7 * 24 * 60 * 60  # 7 days
-max_age = getattr(settings, "WAGTAILDRAFTSHARING_MAX_AGE", DEFAULT_MAX_AGE)
+from . import settings as draftsharing_settings
+
+max_age = draftsharing_settings.WAGTAIL_DRAFTSHARING_MAX_AGE
 
 
 class SharingLinkView(PreviewRevision):
