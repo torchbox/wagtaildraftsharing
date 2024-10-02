@@ -27,6 +27,7 @@ classifiers = [
 testing = [
     "coverage[toml]",
     "wagtail-factories",
+    "freezegun==1.5.1",
 ]
 
 [project.urls]
