@@ -58,6 +58,16 @@ class TestViews(TestCase):
             response_data["url"], WagtaildraftsharingLink.objects.get().url
         )
 
+    def test_create_sharing_link_view__invalid_data(self):
+        revision = self.create_revision()
+        request = self.factory.post("/create/", {"revision": revision.id + 123})
+        request.user = self.superuser
+
+        self.assertEqual(WagtaildraftsharingLink.objects.count(), 0)
+        response = CreateSharingLinkView.as_view()(request)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(WagtaildraftsharingLink.objects.count(), 0)
+
     def test_create_sharing_link_view__editor_allowed(self):
         # Assumes default Wagtail staff-side user groups are present
         editor_group = Group.objects.get(name="Editors")
