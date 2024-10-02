@@ -68,7 +68,8 @@ class WagtaildraftsharingLink(models.Model):
             template = """<a
                 data-wagtaildraftsharing-url
                 class="button button-secondary button-small"
-                target="_blank" rel="noopener noreferrer" href="{}">View</a>"""
+                target="_blank" rel="noopener noreferrer"
+                href="{}">View</a>"""
         else:
             template = """<a
                 class="button button-secondary button-small"
