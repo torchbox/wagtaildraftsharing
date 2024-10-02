@@ -3,8 +3,10 @@ import json
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.http import Http404
-from django.test import RequestFactory, TestCase, override_settings
+from django.test import RequestFactory, TestCase
+from django.urls import reverse
 from django.utils.timezone import now as datetime_now
 from freezegun import freeze_time
 from wagtail_factories import PageFactory
@@ -22,7 +24,8 @@ class TestViews(TestCase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
-        cls.superuser = User.objects.create_superuser(username="test", password="test")
+
+        cls.superuser = User.objects.create_superuser(username="admin", password="test")
         cls.factory = RequestFactory()
 
     def create_revision(self):
@@ -44,12 +47,7 @@ class TestViews(TestCase):
 
     def test_create_sharing_link_view(self):
         revision = self.create_revision()
-        request = self.factory.post(
-            "/create/",
-            {
-                "revision": revision.id,
-            },
-        )
+        request = self.factory.post("/create/", {"revision": revision.id})
         request.user = self.superuser
 
         response = CreateSharingLinkView.as_view()(request)
@@ -59,6 +57,44 @@ class TestViews(TestCase):
         self.assertEqual(
             response_data["url"], WagtaildraftsharingLink.objects.get().url
         )
+
+    def test_create_sharing_link_view__editor_allowed(self):
+        # Assumes default Wagtail staff-side user groups are present
+        editor_group = Group.objects.get(name="Editors")
+        editor = User.objects.create_user(username="editor", password="test")
+        editor.groups.add(editor_group)
+
+        revision = self.create_revision()
+        dest = reverse("wagtaildraftsharing:create")
+        self.assertEqual(WagtaildraftsharingLink.objects.count(), 0)
+        self.client.login(username="editor", password="test")
+        response = self.client.post(dest, data={"revision": revision.id}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(WagtaildraftsharingLink.objects.count(), 1)
+
+    def test_create_sharing_link_view__moderator_allowed(self):
+        moderator_group = Group.objects.get(name="Moderators")
+        moderator = User.objects.create_user(username="moderator", password="test")
+        moderator.groups.add(moderator_group)
+
+        revision = self.create_revision()
+        dest = reverse("wagtaildraftsharing:create")
+        self.assertEqual(WagtaildraftsharingLink.objects.count(), 0)
+        self.client.login(username="moderator", password="test")
+        response = self.client.post(dest, data={"revision": revision.id}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(WagtaildraftsharingLink.objects.count(), 1)
+
+    def test_create_sharing_link_view__anonymous_user_not_allowed(self):
+        revision = self.create_revision()
+        dest = reverse("wagtaildraftsharing:create")
+        self.assertEqual(WagtaildraftsharingLink.objects.count(), 0)
+        response = self.client.post(dest, data={"revision": revision.id}, follow=True)
+        self.assertContains(
+            response,
+            "Sorry, you do not have permission to access this area",
+        )
+        self.assertEqual(WagtaildraftsharingLink.objects.count(), 0)
 
     @freeze_time(FROZEN_TIME_ISOFORMATTED)
     def test_create_sharing_link_view__max_age_from_settings(self):
