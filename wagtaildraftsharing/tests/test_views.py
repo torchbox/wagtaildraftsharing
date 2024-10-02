@@ -20,7 +20,7 @@ User = get_user_model()
 FROZEN_TIME_ISOFORMATTED = "2024-01-02 12:34:56.123456+00:00"
 
 
-class TestViews(TestCase):
+class CreateSharingLinkViewTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
@@ -143,6 +143,32 @@ class TestViews(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, f"<title>{revision.as_object().title}</title>")
+
+
+class SharingLinkViewTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.superuser = User.objects.create_superuser(username="admin", password="test")
+        cls.factory = RequestFactory()
+
+    def create_revision(self):
+        page = PageFactory()
+
+        # create the first revision
+        page.save_revision().publish()
+
+        old_title = page.title
+        new_title = f"New {old_title}"
+        page.title = new_title
+
+        # create the second revision with a new title
+        page.save_revision().publish()
+
+        page.refresh_from_db()
+        earliest_revision = page.revisions.earliest("created_at")
+        return earliest_revision
 
     def test_sharing_link_view__invalid_link_404s(self):
         revision = self.create_revision()
