@@ -12,11 +12,11 @@ from wagtail.snippets.models import register_snippet
 from wagtaildraftsharing.actions import (
     register_wagtaildraftsharing_log_actions,
 )
-from wagtaildraftsharing.snippets import WagtaildraftsharingLinkSnippet
+from wagtaildraftsharing.snippets import WagtaildraftsharingLinkSnippetViewSet
 
 from . import settings as draftsharing_settings
 
-register_snippet(WagtaildraftsharingLinkSnippet)
+register_snippet(WagtaildraftsharingLinkSnippetViewSet)
 
 hooks.register("register_log_actions")(register_wagtaildraftsharing_log_actions)
 

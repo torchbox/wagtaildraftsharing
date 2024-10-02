@@ -5,7 +5,7 @@ from wagtaildraftsharing.models import WagtaildraftsharingLink
 from . import settings as draftsharing_settings
 
 
-class WagtaildraftsharingLinkSnippet(SnippetViewSet):
+class WagtaildraftsharingLinkSnippetViewSet(SnippetViewSet):
     model = WagtaildraftsharingLink
     base_url_path = "wagtaildraftsharing"
     menu_icon = "view"
