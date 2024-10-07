@@ -7,7 +7,7 @@ from django.contrib.auth.models import Group
 from django.http import Http404
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
-from django.utils.timezone import now as datetime_now
+from django.utils.timezone import now as timezone_now
 from freezegun import freeze_time
 from wagtail_factories import PageFactory
 
@@ -132,18 +132,6 @@ class CreateSharingLinkViewTests(TestCase):
                         expected_expiry,
                     )
 
-    def test_sharing_link_view__valid_link(self):
-        revision = self.create_revision()
-        sharing_link = WagtaildraftsharingLink.objects.create(
-            revision=revision, created_by=self.superuser
-        )
-
-        request = self.factory.get(f"/{sharing_link.key}/")
-        response = SharingLinkView.as_view()(request, key=sharing_link.key)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, f"<title>{revision.as_object().title}</title>")
-
 
 class SharingLinkViewTests(TestCase):
     @classmethod
@@ -170,6 +158,18 @@ class SharingLinkViewTests(TestCase):
         earliest_revision = page.revisions.earliest("created_at")
         return earliest_revision
 
+    def test_sharing_link_view__valid_link(self):
+        revision = self.create_revision()
+        sharing_link = WagtaildraftsharingLink.objects.create(
+            revision=revision, created_by=self.superuser
+        )
+
+        request = self.factory.get(f"/{sharing_link.key}/")
+        response = SharingLinkView.as_view()(request, key=sharing_link.key)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, f"<title>{revision.as_object().title}</title>")
+
     def test_sharing_link_view__invalid_link_404s(self):
         revision = self.create_revision()
         sharing_link = WagtaildraftsharingLink.objects.create(
@@ -194,7 +194,7 @@ class SharingLinkViewTests(TestCase):
         response = SharingLinkView.as_view()(request, key=sharing_link.key)
         self.assertEqual(response.status_code, 200)
 
-        sharing_link.active_until = datetime_now() - datetime.timedelta(seconds=1)
+        sharing_link.active_until = timezone_now() - datetime.timedelta(seconds=1)
         sharing_link.save()
         sharing_link.refresh_from_db()
 
