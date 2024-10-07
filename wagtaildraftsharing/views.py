@@ -1,5 +1,4 @@
 import uuid
-from datetime import UTC
 
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
