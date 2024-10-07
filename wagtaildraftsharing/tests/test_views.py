@@ -1,12 +1,16 @@
 import datetime
 import json
+import warnings
+from datetime import UTC
 from unittest.mock import patch
 
+import wagtail
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.http import Http404
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
+from django.utils.timezone import is_aware, make_aware
 from django.utils.timezone import now as timezone_now
 from freezegun import freeze_time
 from wagtail_factories import PageFactory
@@ -127,6 +131,17 @@ class CreateSharingLinkViewTests(TestCase):
                     self.assertEqual(response.status_code, 200)
 
                     link = WagtaildraftsharingLink.objects.last()
+
+                    # Work around oddity with Wagtail 5.1 where active_until comes
+                    # back as a naive datetime, but not in any other version...
+                    version_parts = wagtail.__version__.split(".")
+                    if version_parts[0] == "5" and version_parts[1] == "1":
+                        if link.active_until and not is_aware(link.active_until):
+                            warnings.warn(
+                                "link.active_until was a naive datetime. "
+                                "Making aware as a UTC-timezone datetime"
+                            )
+                            link.active_until = make_aware(link.active_until, UTC)
                     assert link.active_until == expected_expiry, (
                         link.active_until,
                         expected_expiry,
