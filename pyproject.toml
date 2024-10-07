@@ -3,7 +3,7 @@ name = "wagtaildraftsharing"
 version = "0.0.4"
 description = "Share wagtail drafts with private URLs."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = {text = "CC0"}
 authors = [
     {name = "Shohan Dutta Roy", email = "shohanduttaroy99@gmail.com" }
@@ -58,6 +58,8 @@ exclude = [
     ".venv",
     "venv",
 ]
+
+[lint]
 ignore = []
 select = [
     "E",

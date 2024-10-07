@@ -1,7 +1,7 @@
 import datetime
 import json
 import warnings
-from datetime import UTC
+from datetime import timezone
 from unittest.mock import patch
 
 import wagtail
@@ -141,7 +141,9 @@ class CreateSharingLinkViewTests(TestCase):
                                 "link.active_until was a naive datetime. "
                                 "Making aware as a UTC-timezone datetime"
                             )
-                            link.active_until = make_aware(link.active_until, UTC)
+                            link.active_until = make_aware(
+                                link.active_until, timezone.utc
+                            )
                     assert link.active_until == expected_expiry, (
                         link.active_until,
                         expected_expiry,
