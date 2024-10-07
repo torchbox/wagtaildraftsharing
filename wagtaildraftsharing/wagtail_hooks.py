@@ -23,6 +23,8 @@ hooks.register("register_log_actions")(register_wagtaildraftsharing_log_actions)
 
 @hooks.register("insert_global_admin_js")
 def editor_js():
+    # We need different approaches to the JS depending on whether it's
+    # Wagtail 5 (vanilla JS) or Wagtail 6 (Stimulus)
     if int(wagtail.__version__[0]) < 6:
         SHARING_JS_TEMPLATE = """<script src="{}"></script>"""
         SHARING_JS_PATH = "wagtaildraftsharing/js/wagtaildraftsharing.js"
@@ -46,6 +48,8 @@ def editor_js():
 
 
 class DraftsharingPageActionMenuItem(ActionMenuItem):
+    # Adds a button for sharing a draft to the bottom-of-page action menu
+    # when a page is being edited, but only if there is a saved draft to share
     order = 1600
     name = "action-draftsharing"
     icon_name = "view"
