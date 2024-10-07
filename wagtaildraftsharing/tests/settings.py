@@ -14,9 +14,7 @@ ROOT_URLCONF = "wagtaildraftsharing.tests.urls"
 
 DATABASES = {
     "default": {
-        "ENGINE": os.environ.get(
-            "DATABASE_ENGINE", "django.db.backends.sqlite3"
-        ),
+        "ENGINE": os.environ.get("DATABASE_ENGINE", "django.db.backends.sqlite3"),
         "NAME": os.environ.get("DATABASE_NAME", "wagtaildraftsharing.sqlite"),
         "USER": os.environ.get("DATABASE_USER", None),
         "PASSWORD": os.environ.get("DATABASE_PASS", None),
