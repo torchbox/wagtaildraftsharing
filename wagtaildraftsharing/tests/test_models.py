@@ -26,6 +26,14 @@ class TestWagtaildraftsharingLinkModel(TestCase):
         earliest_revision = page.revisions.earliest("created_at")
         return earliest_revision
 
+    def test_str_method(self):
+        # Just chasing 100% coverage
+        revision = self.create_revision()
+        link = WagtaildraftsharingLink.objects.create(
+            revision=revision,
+        )
+        self.assertEqual(str(link), f"Revision {revision.id} of New Test page")
+
     def test_url_method(self):
         link = WagtaildraftsharingLink.objects.create(
             revision=self.create_revision(),
@@ -40,9 +48,10 @@ class TestWagtaildraftsharingLinkModel(TestCase):
         )
         expected = dedent(
             f"""<a
-                data-wagtaildraftsharing-url
                 class="button button-secondary button-small"
-                target="_blank" rel="noopener noreferrer"
+                data-wagtaildraftsharing-url
+                target="_blank"
+                rel="noopener noreferrer"
                 href="/wagtaildraftsharing/{link.key}/">View</a>"""
         )
         self.assertEqual(dedent(link.share_url), expected)
@@ -57,9 +66,8 @@ class TestWagtaildraftsharingLinkModel(TestCase):
                 class="button button-secondary button-small"
                 data-controller="wagtaildraftsharing"
                 data-wagtaildraftsharing-snippet-url
-                href="/wagtaildraftsharing/{link.key}/"
                 target="_blank"
                 rel="noopener noreferrer"
-                >View</a>"""
+                href="/wagtaildraftsharing/{link.key}/">View</a>"""
         )
         self.assertEqual(dedent(link.share_url), expected)
