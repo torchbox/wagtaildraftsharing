@@ -1,16 +1,13 @@
 import datetime
 import json
-import warnings
-from datetime import timezone
 from unittest.mock import patch
 
-import wagtail
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.http import Http404
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
-from django.utils.timezone import is_aware, make_aware
+from django.utils.timezone import is_aware
 from django.utils.timezone import now as timezone_now
 from freezegun import freeze_time
 from wagtail_factories import PageFactory
@@ -114,6 +111,10 @@ class CreateSharingLinkViewTests(TestCase):
     def test_create_sharing_link_view__max_age_from_settings(self):
         frozen_time = datetime.datetime.fromisoformat(FROZEN_TIME_ISOFORMATTED)
 
+        # Ensure we've got a level playing field here and that the time is timezone-aware
+        if not is_aware(frozen_time):
+            self.fail("frozen_time was a naive datetime but it should not be")
+
         max_ages_and_expected_expiries = (
             (300, frozen_time + datetime.timedelta(seconds=300)),
             (1250000, frozen_time + datetime.timedelta(seconds=1250000)),
@@ -132,18 +133,6 @@ class CreateSharingLinkViewTests(TestCase):
 
                     link = WagtaildraftsharingLink.objects.last()
 
-                    # Work around oddity with Wagtail 5.1 where active_until comes
-                    # back as a naive datetime, but not in any other version...
-                    version_parts = wagtail.__version__.split(".")
-                    if version_parts[0] == "5" and version_parts[1] == "1":
-                        if link.active_until and not is_aware(link.active_until):
-                            warnings.warn(
-                                "link.active_until was a naive datetime. "
-                                "Making aware as a UTC-timezone datetime"
-                            )
-                            link.active_until = make_aware(
-                                link.active_until, timezone.utc
-                            )
                     assert link.active_until == expected_expiry, (
                         link.active_until,
                         expected_expiry,

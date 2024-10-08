@@ -29,6 +29,8 @@ Since ``wagtaildraftsharing`` overrides one of the ``wagtail.admin`` templates, 
 
 This package also makes use of ``wagtail.snippets``, so it must be included in your list of installed apps.
 
+You must also have ``USE_TZ=True`` in your project settings to ensure expiry datetimes are all referencing the expected timezone - from Django 5, this defaults to ``True``, whereas previously it was ``False``.
+
 Run migrations to create the required database tables:
 
 ```bash
