@@ -111,7 +111,7 @@ class CreateSharingLinkViewTests(TestCase):
     def test_create_sharing_link_view__max_age_from_settings(self):
         frozen_time = datetime.datetime.fromisoformat(FROZEN_TIME_ISOFORMATTED)
 
-        # Ensure we've got a level playing field here and that the time is timezone-aware
+        # Ensure we've got a level playing field: that the time is TZ-aware
         if not is_aware(frozen_time):
             self.fail("frozen_time was a naive datetime but it should not be")
 
