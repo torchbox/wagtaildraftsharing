@@ -59,11 +59,12 @@ class DraftsharingPageActionMenuItem(ActionMenuItem):
 
     def get_context_data(self, parent_context):
         context_data = super().get_context_data(parent_context)
+
         context_data["revision"] = context_data["page"].latest_revision
         return context_data
 
     def is_shown(self, context):
-        return context["page"].has_unpublished_changes
+        return "page" in context and context["page"].has_unpublished_changes
 
 
 @hooks.register("register_page_action_menu_item")

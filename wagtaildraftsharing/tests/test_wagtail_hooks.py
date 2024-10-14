@@ -76,3 +76,8 @@ class WagtailHooksTests(TestCase):
 
         mock_page.has_unpublished_changes = True
         self.assertTrue(menu_item.is_shown({"page": mock_page}))
+
+    def test_action_menu_hook__is_shown__no_page_in_context(self):
+        menu_item = wagtail_hooks.DraftsharingPageActionMenuItem()
+        self.assertFalse(menu_item.is_shown({}))
+        self.assertFalse(menu_item.is_shown({"something_that_is_not_a_page": "here"}))

@@ -1,12 +1,15 @@
 [project]
 name = "wagtaildraftsharing"
-version = "0.0.4"
+version = "0.1.1"
 description = "Share wagtail drafts with private URLs."
 readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "CC0"}
 authors = [
     {name = "Shohan Dutta Roy", email = "shohanduttaroy99@gmail.com" }
+]
+maintainers = [
+    {name = "Steve Jalim", email = "stevejalim@mozilla.com" }
 ]
 dependencies = [
     "wagtail>=5.1",
