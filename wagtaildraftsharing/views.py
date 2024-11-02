@@ -18,7 +18,7 @@ from wagtaildraftsharing.models import WagtaildraftsharingLink
 
 from . import settings as draftsharing_settings
 
-max_age = draftsharing_settings.WAGTAIL_DRAFTSHARING_MAX_AGE
+max_age = draftsharing_settings.WAGTAILDRAFTSHARING_MAX_AGE
 
 
 def _tz_aware_utc_now():

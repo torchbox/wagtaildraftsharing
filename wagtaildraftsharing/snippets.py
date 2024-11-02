@@ -9,7 +9,7 @@ class WagtaildraftsharingLinkSnippetViewSet(SnippetViewSet):
     model = WagtaildraftsharingLink
     base_url_path = "wagtaildraftsharing"
     menu_icon = "view"
-    menu_order = draftsharing_settings.WAGTAIL_DRAFTSHARING_ADMIN_MENU_POSITION
+    menu_order = draftsharing_settings.WAGTAILDRAFTSHARING_ADMIN_MENU_POSITION
     add_to_settings_menu = False
     add_to_admin_menu = True
     list_display = ("__str__", "is_active", "created_by", "share_url")
