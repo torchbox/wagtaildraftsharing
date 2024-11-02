@@ -41,11 +41,9 @@ class WagtaildraftsharingLink(models.Model):
 
         # Set the verbose names from settings,
         # in a way that doesn't trigger migrations
-        self._meta.verbose_name = (
-            draftsharing_settings.WAGTAIL_DRAFTSHARING_VERBOSE_NAME
-        )
+        self._meta.verbose_name = draftsharing_settings.WAGTAILDRAFTSHARING_VERBOSE_NAME
         self._meta.verbose_name_plural = (
-            draftsharing_settings.WAGTAIL_DRAFTSHARING_VERBOSE_NAME_PLURAL
+            draftsharing_settings.WAGTAILDRAFTSHARING_VERBOSE_NAME_PLURAL
         )
 
     def __str__(self):

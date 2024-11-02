@@ -53,7 +53,7 @@ class DraftsharingPageActionMenuItem(ActionMenuItem):
     order = 1600
     name = "action-draftsharing"
     icon_name = "view"
-    label = draftsharing_settings.WAGTAIL_DRAFTSHARING_MENU_ITEM_LABEL
+    label = draftsharing_settings.WAGTAILDRAFTSHARING_MENU_ITEM_LABEL
 
     template_name = "wagtaildraftsharing/action_menu_item.html"
 
