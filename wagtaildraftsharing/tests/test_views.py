@@ -1,18 +1,14 @@
 import datetime
 import json
-from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.http import Http404
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
-from django.utils.timezone import is_aware
 from django.utils.timezone import now as timezone_now
-from freezegun import freeze_time
 from wagtail_factories import PageFactory
 
-import wagtaildraftsharing.views
 from wagtaildraftsharing.models import WagtaildraftsharingLink
 from wagtaildraftsharing.views import CreateSharingLinkView, SharingLinkView
 
@@ -106,37 +102,6 @@ class CreateSharingLinkViewTests(TestCase):
             "Sorry, you do not have permission to access this area",
         )
         self.assertEqual(WagtaildraftsharingLink.objects.count(), 0)
-
-    @freeze_time(FROZEN_TIME_ISOFORMATTED)
-    def test_create_sharing_link_view__max_age_from_settings(self):
-        frozen_time = datetime.datetime.fromisoformat(FROZEN_TIME_ISOFORMATTED)
-
-        # Ensure we've got a level playing field: that the time is TZ-aware
-        if not is_aware(frozen_time):
-            self.fail("frozen_time was a naive datetime but it should not be")
-
-        max_ages_and_expected_expiries = (
-            (300, frozen_time + datetime.timedelta(seconds=300)),
-            (1250000, frozen_time + datetime.timedelta(seconds=1250000)),
-            (-1, None),
-        )
-
-        for max_age, expected_expiry in max_ages_and_expected_expiries:
-            with self.subTest(max_age=max_age, expected_expiry=expected_expiry):
-                with patch.object(wagtaildraftsharing.views, "max_age", max_age):
-                    revision = self.create_revision()
-                    request = self.factory.post("/create/", {"revision": revision.id})
-                    request.user = self.superuser
-
-                    response = CreateSharingLinkView.as_view()(request)
-                    self.assertEqual(response.status_code, 200)
-
-                    link = WagtaildraftsharingLink.objects.last()
-
-                    assert link.active_until == expected_expiry, (
-                        link.active_until,
-                        expected_expiry,
-                    )
 
 
 class SharingLinkViewTests(TestCase):

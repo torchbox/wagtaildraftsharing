@@ -5,8 +5,42 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.timezone import timedelta
+from wagtail.log_actions import log
+
+from wagtaildraftsharing.actions import WAGTAILDRAFTSHARING_CREATE_SHARING_LINK
+from wagtaildraftsharing.utils import tz_aware_utc_now
 
 from . import settings as draftsharing_settings
+
+max_age = draftsharing_settings.WAGTAILDRAFTSHARING_MAX_AGE
+
+
+class WagtaildraftsharingLinkManager(models.Manager):
+    def get_or_create_for_revision(self, *, revision, user):
+        key = uuid.uuid4()
+        if max_age > 0:
+            active_until = tz_aware_utc_now() + timedelta(seconds=max_age)
+        else:
+            active_until = None
+        sharing_link, created = WagtaildraftsharingLink.objects.get_or_create(
+            revision=revision,
+            defaults={
+                "key": key,
+                "created_by": user,
+                "active_until": active_until,
+            },
+        )
+        if created:
+            log(
+                instance=revision.content_object,
+                action=WAGTAILDRAFTSHARING_CREATE_SHARING_LINK,
+                user=user,
+                revision=revision,
+                data={"revision": revision.id},
+            )
+
+        return sharing_link
 
 
 class WagtaildraftsharingLink(models.Model):
@@ -35,6 +69,8 @@ class WagtaildraftsharingLink(models.Model):
         related_name="+",
         editable=False,
     )
+
+    objects = WagtaildraftsharingLinkManager()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
