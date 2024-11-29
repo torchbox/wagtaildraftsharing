@@ -14,7 +14,7 @@ from wagtaildraftsharing.actions import (
 )
 from wagtaildraftsharing.snippets import WagtaildraftsharingLinkSnippetViewSet
 
-from . import settings as draftsharing_settings
+from .settings import settings as draftsharing_settings
 
 register_snippet(WagtaildraftsharingLinkSnippetViewSet)
 
@@ -53,7 +53,7 @@ class DraftsharingPageActionMenuItem(ActionMenuItem):
     order = 1600
     name = "action-draftsharing"
     icon_name = "view"
-    label = draftsharing_settings.WAGTAILDRAFTSHARING_MENU_ITEM_LABEL
+    label = draftsharing_settings.MENU_ITEM_LABEL
 
     template_name = "wagtaildraftsharing/action_menu_item.html"
 

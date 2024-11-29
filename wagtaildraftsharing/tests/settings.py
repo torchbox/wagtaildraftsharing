@@ -88,3 +88,10 @@ WAGTAIL_SITE_NAME = "Test Site"
 WAGTAILADMIN_BASE_URL = "http://localhost:8000"
 
 USE_TZ = True
+
+# Wagtaildraftsharing settings
+
+WAGTAILDRAFTSHARING = {
+    # Here is where settings would be overridden in a real project
+    # "MAX_AGE": 12312321,
+}

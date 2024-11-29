@@ -11,9 +11,9 @@ from wagtail.log_actions import log
 from wagtaildraftsharing.actions import WAGTAILDRAFTSHARING_CREATE_SHARING_LINK
 from wagtaildraftsharing.utils import tz_aware_utc_now
 
-from . import settings as draftsharing_settings
+from .settings import settings as draftsharing_settings
 
-max_age = draftsharing_settings.WAGTAILDRAFTSHARING_MAX_AGE
+max_age = draftsharing_settings.MAX_AGE
 
 
 class WagtaildraftsharingLinkManager(models.Manager):
@@ -77,10 +77,8 @@ class WagtaildraftsharingLink(models.Model):
 
         # Set the verbose names from settings,
         # in a way that doesn't trigger migrations
-        self._meta.verbose_name = draftsharing_settings.WAGTAILDRAFTSHARING_VERBOSE_NAME
-        self._meta.verbose_name_plural = (
-            draftsharing_settings.WAGTAILDRAFTSHARING_VERBOSE_NAME_PLURAL
-        )
+        self._meta.verbose_name = draftsharing_settings.VERBOSE_NAME
+        self._meta.verbose_name_plural = draftsharing_settings.VERBOSE_NAME_PLURAL
 
     def __str__(self):
         return f"Revision {self.revision_id} of {self.revision.content_object}"
