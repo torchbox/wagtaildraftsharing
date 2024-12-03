@@ -54,7 +54,9 @@ class TestWagtaildraftsharingLinkManager(TestCase):
 
         for max_age, expected_expiry in max_ages_and_expected_expiries:
             with self.subTest(max_age=max_age, expected_expiry=expected_expiry):
-                with patch.object(wagtaildraftsharing.models, "max_age", max_age):
+                with patch.object(
+                    wagtaildraftsharing.models.draftsharing_settings, "MAX_AGE", max_age
+                ):
                     revision = self.create_revision()
 
                     link = WagtaildraftsharingLink.objects.get_or_create_for_revision(
@@ -66,6 +68,33 @@ class TestWagtaildraftsharingLinkManager(TestCase):
                         link.active_until,
                         expected_expiry,
                     )
+
+    @freeze_time(FROZEN_TIME_ISOFORMATTED)
+    def test_create_sharing_link_view__max_age_from_params(self):
+        frozen_time = datetime.datetime.fromisoformat(FROZEN_TIME_ISOFORMATTED)
+
+        # Ensure we've got a level playing field: that the time is TZ-aware
+        if not is_aware(frozen_time):
+            self.fail("frozen_time was a naive datetime but it should not be")
+
+        max_ages_and_expected_expiries = (
+            (600, frozen_time + datetime.timedelta(seconds=600)),
+            (250000, frozen_time + datetime.timedelta(seconds=250000)),
+            (-1, None),
+        )
+
+        for max_age, expected_expiry in max_ages_and_expected_expiries:
+            with self.subTest(max_age=max_age, expected_expiry=expected_expiry):
+                revision = self.create_revision()
+
+                link = WagtaildraftsharingLink.objects.get_or_create_for_revision(
+                    revision=revision, user=self.test_user, max_age=max_age
+                )
+
+                assert link.active_until == expected_expiry, (
+                    link.active_until,
+                    expected_expiry,
+                )
 
 
 class TestWagtaildraftsharingLinkModel(TestCase):

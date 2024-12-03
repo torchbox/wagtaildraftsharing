@@ -7,7 +7,7 @@ from django.utils.functional import SimpleLazyObject
 _DEFAULT_MAX_AGE = 7 * 24 * 60 * 60  # 7 days
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass
 class WagtaildraftsharingSettings:
     ADMIN_MENU_POSITION: int = 200
     VERBOSE_NAME: str = "Draftsharing Link"

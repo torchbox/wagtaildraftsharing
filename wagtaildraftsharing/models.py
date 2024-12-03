@@ -13,11 +13,11 @@ from wagtaildraftsharing.utils import tz_aware_utc_now
 
 from .settings import settings as draftsharing_settings
 
-max_age = draftsharing_settings.MAX_AGE
-
 
 class WagtaildraftsharingLinkManager(models.Manager):
-    def get_or_create_for_revision(self, *, revision, user):
+    def get_or_create_for_revision(self, *, revision, user, max_age=None):
+        if max_age is None:
+            max_age = draftsharing_settings.MAX_AGE
         key = uuid.uuid4()
         if max_age > 0:
             active_until = tz_aware_utc_now() + timedelta(seconds=max_age)
