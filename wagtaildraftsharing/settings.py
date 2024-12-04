@@ -4,7 +4,7 @@ from typing import cast
 from django.conf import settings as django_settings
 from django.utils.functional import SimpleLazyObject
 
-_DEFAULT_MAX_TTL = 7 * 24 * 60 * 60  # 7 days
+_DEFAULT_MAX_TTL = 28 * 24 * 60 * 60  # 28 days
 
 
 @dataclasses.dataclass
