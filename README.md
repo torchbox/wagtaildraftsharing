@@ -72,12 +72,12 @@ The following settings can be added to your Django settings file as keys in a `W
 ```
 WAGTAILDRAFTSHARING = {
     ...
-    "MAX_AGE": 123456,
+    "MAX_TTL": 123456,
     ...
 }
 ```
 
-### ``MAX_AGE``
+### ``MAX_TTL``
 
 The default expiry time for generated links, in seconds. Defaults to 1 week. Set it to a negative value to disable expiry.
 

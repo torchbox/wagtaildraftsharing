@@ -93,5 +93,5 @@ USE_TZ = True
 
 WAGTAILDRAFTSHARING = {
     # Here is where settings would be overridden in a real project
-    # "MAX_AGE": 12312321,
+    # "MAX_TTL": 12312321,
 }

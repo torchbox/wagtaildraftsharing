@@ -55,7 +55,7 @@ class TestWagtaildraftsharingLinkManager(TestCase):
         for max_ttl, expected_expiry in max_ages_and_expected_expiries:
             with self.subTest(max_ttl=max_ttl, expected_expiry=expected_expiry):
                 with patch.object(
-                    wagtaildraftsharing.models.draftsharing_settings, "MAX_AGE", max_ttl
+                    wagtaildraftsharing.models.draftsharing_settings, "MAX_TTL", max_ttl
                 ):
                     revision = self.create_revision()
 

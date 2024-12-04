@@ -4,7 +4,7 @@ from typing import cast
 from django.conf import settings as django_settings
 from django.utils.functional import SimpleLazyObject
 
-_DEFAULT_MAX_AGE = 7 * 24 * 60 * 60  # 7 days
+_DEFAULT_MAX_TTL = 7 * 24 * 60 * 60  # 7 days
 
 
 @dataclasses.dataclass
@@ -13,7 +13,7 @@ class WagtaildraftsharingSettings:
     VERBOSE_NAME: str = "Draftsharing Link"
     VERBOSE_NAME_PLURAL: str = "Draftsharing Links"
     MENU_ITEM_LABEL: str = "Create draft sharing link"
-    MAX_AGE: int = _DEFAULT_MAX_AGE
+    MAX_TTL: int = _DEFAULT_MAX_TTL
 
 
 def _init_settings():
@@ -31,7 +31,7 @@ def _init_settings():
         "VERBOSE_NAME",
         "VERBOSE_NAME_PLURAL",
         "MENU_ITEM_LABEL",
-        "MAX_AGE",
+        "MAX_TTL",
     ]:
         if optional_setting_name in django_settings_dict:
             overriden_defaults[optional_setting_name] = django_settings_dict[
