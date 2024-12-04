@@ -67,25 +67,37 @@ draft version saved since the last time the page was published
 
 ## Settings
 
-The following settings can be added to your Django settings file:
+The following settings can be added to your Django settings file as keys in a `WAGTAILDRAFTSHARING` dictionary
 
-### ``WAGTAILDRAFTSHARING_MAX_AGE``
+```
+WAGTAILDRAFTSHARING = {
+    ...
+    "MAX_TTL": 123456,
+    ...
+}
+```
 
-The default expiry time for generated links, in seconds. Defaults to 1 week. Set it to a negative value to disable expiry.
+### ``MAX_TTL``
 
-### ```WAGTAILDRAFTSHARING_ADMIN_MENU_POSITION```
+The default expiry time for generated links, in seconds. Defaults to 28 days. Set it to a negative value to disable expiry.
+
+### ```ADMIN_MENU_POSITION```
 
 Set the integer priority to control where in the admin menu
 the link to the list of generated links sits. Defaults to 200.
 
-### ```WAGTAILDRAFTSHARING_VERBOSE_NAME```
+### ```VERBOSE_NAME```
 
 Provide a different singular label for a link. Defaults to "Draftsharing Link"
 
-### ```WAGTAILDRAFTSHARING_VERBOSE_NAME_PLURAL```
+### ```VERBOSE_NAME_PLURAL```
 
 Provide a different plural label for a link. Defaults to "Draftsharing Links"
 
-### ```WAGTAILDRAFTSHARING_MENU_ITEM_LABEL```
+### ```MENU_ITEM_LABEL```
 
 Customise the label used in the page-level Action Menu for creating a link. Defaults to "Create draft sharing link",
+
+## Testing
+
+To install testing dependencies locally run `pip install -e ".[testing]"`
