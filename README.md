@@ -79,7 +79,7 @@ WAGTAILDRAFTSHARING = {
 
 ### ``MAX_TTL``
 
-The default expiry time for generated links, in seconds. Defaults to 1 week. Set it to a negative value to disable expiry.
+The default expiry time for generated links, in seconds. Defaults to 28 days. Set it to a negative value to disable expiry.
 
 ### ```ADMIN_MENU_POSITION```
 
