@@ -53,21 +53,31 @@ class TestWagtaildraftsharingLinkManager(TestCase):
         )
 
         for max_ttl, expected_expiry in max_ttls_and_expected_expiries:
-            with self.subTest(max_ttl=max_ttl, expected_expiry=expected_expiry):
-                with patch.object(
-                    wagtaildraftsharing.models.draftsharing_settings, "MAX_TTL", max_ttl
+            for method_name in [
+                "get_or_create_for_revision",
+                "create_for_revision",
+            ]:
+                with self.subTest(
+                    max_ttl=max_ttl,
+                    expected_expiry=expected_expiry,
+                    method_name=method_name,
                 ):
-                    revision = self.create_revision()
+                    with patch.object(
+                        wagtaildraftsharing.models.draftsharing_settings,
+                        "MAX_TTL",
+                        max_ttl,
+                    ):
+                        revision = self.create_revision()
 
-                    link = WagtaildraftsharingLink.objects.get_or_create_for_revision(
-                        revision=revision,
-                        user=self.test_user,
-                    )
+                        link = getattr(WagtaildraftsharingLink.objects, method_name)(
+                            revision=revision,
+                            user=self.test_user,
+                        )
 
-                    assert link.active_until == expected_expiry, (
-                        link.active_until,
-                        expected_expiry,
-                    )
+                        assert link.active_until == expected_expiry, (
+                            link.active_until,
+                            expected_expiry,
+                        )
 
     @freeze_time(FROZEN_TIME_ISOFORMATTED)
     def test_create_sharing_link__max_ttl_from_params(self):
@@ -84,17 +94,43 @@ class TestWagtaildraftsharingLinkManager(TestCase):
         )
 
         for max_ttl, expected_expiry in max_ttls_and_expected_expiries:
-            with self.subTest(max_ttl=max_ttl, expected_expiry=expected_expiry):
+            for method_name in [
+                "get_or_create_for_revision",
+                "create_for_revision",
+            ]:
+                with self.subTest(
+                    max_ttl=max_ttl,
+                    expected_expiry=expected_expiry,
+                    method_name=method_name,
+                ):
+                    revision = self.create_revision()
+
+                    link = getattr(WagtaildraftsharingLink.objects, method_name)(
+                        revision=revision, user=self.test_user, max_ttl=max_ttl
+                    )
+
+                    assert link.active_until == expected_expiry, (
+                        link.active_until,
+                        expected_expiry,
+                    )
+
+    def test_create_sharing_link_allows_multiple_links_per_revision(self):
+        for method_name in [
+            "get_or_create_for_revision",
+            "create_for_revision",
+        ]:
+            with self.subTest(method_name=method_name):
                 revision = self.create_revision()
-
-                link = WagtaildraftsharingLink.objects.get_or_create_for_revision(
-                    revision=revision, user=self.test_user, max_ttl=max_ttl
+                link_1 = getattr(WagtaildraftsharingLink.objects, method_name)(
+                    revision=revision, user=self.test_user
                 )
-
-                assert link.active_until == expected_expiry, (
-                    link.active_until,
-                    expected_expiry,
+                link_2 = getattr(WagtaildraftsharingLink.objects, method_name)(
+                    revision=revision, user=self.test_user
                 )
+                if method_name == "get_or_create_for_revision":
+                    assert link_1.key == link_2.key
+                else:
+                    assert link_1.key != link_2.key
 
 
 class TestWagtaildraftsharingLinkModel(TestCase):
