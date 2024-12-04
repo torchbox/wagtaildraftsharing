@@ -8,7 +8,10 @@ from django.utils.html import format_html
 from django.utils.timezone import timedelta
 from wagtail.log_actions import log
 
-from wagtaildraftsharing.actions import WAGTAILDRAFTSHARING_CREATE_SHARING_LINK
+from wagtaildraftsharing.actions import (
+    WAGTAILDRAFTSHARING_CREATE_SHARING_LINK,
+    WAGTAILDRAFTSHARING_REUSE_SHARING_LINK,
+)
 from wagtaildraftsharing.utils import tz_aware_utc_now
 
 from .settings import settings as draftsharing_settings
@@ -66,6 +69,14 @@ class WagtaildraftsharingLinkManager(models.Manager):
             log(
                 instance=revision.content_object,
                 action=WAGTAILDRAFTSHARING_CREATE_SHARING_LINK,
+                user=user,
+                revision=revision,
+                data={"revision": revision.id},
+            )
+        else:
+            log(
+                instance=revision.content_object,
+                action=WAGTAILDRAFTSHARING_REUSE_SHARING_LINK,
                 user=user,
                 revision=revision,
                 data={"revision": revision.id},
