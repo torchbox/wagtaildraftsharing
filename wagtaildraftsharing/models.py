@@ -15,12 +15,12 @@ from .settings import settings as draftsharing_settings
 
 
 class WagtaildraftsharingLinkManager(models.Manager):
-    def get_or_create_for_revision(self, *, revision, user, max_age=None):
-        if max_age is None:
-            max_age = draftsharing_settings.MAX_AGE
+    def get_or_create_for_revision(self, *, revision, user, max_ttl=None):
+        if max_ttl is None:
+            max_ttl = draftsharing_settings.MAX_AGE
         key = uuid.uuid4()
-        if max_age > 0:
-            active_until = tz_aware_utc_now() + timedelta(seconds=max_age)
+        if max_ttl > 0:
+            active_until = tz_aware_utc_now() + timedelta(seconds=max_ttl)
         else:
             active_until = None
         sharing_link, created = WagtaildraftsharingLink.objects.get_or_create(

@@ -52,10 +52,10 @@ class TestWagtaildraftsharingLinkManager(TestCase):
             (-1, None),
         )
 
-        for max_age, expected_expiry in max_ages_and_expected_expiries:
-            with self.subTest(max_age=max_age, expected_expiry=expected_expiry):
+        for max_ttl, expected_expiry in max_ages_and_expected_expiries:
+            with self.subTest(max_ttl=max_ttl, expected_expiry=expected_expiry):
                 with patch.object(
-                    wagtaildraftsharing.models.draftsharing_settings, "MAX_AGE", max_age
+                    wagtaildraftsharing.models.draftsharing_settings, "MAX_AGE", max_ttl
                 ):
                     revision = self.create_revision()
 
@@ -83,12 +83,12 @@ class TestWagtaildraftsharingLinkManager(TestCase):
             (-1, None),
         )
 
-        for max_age, expected_expiry in max_ages_and_expected_expiries:
-            with self.subTest(max_age=max_age, expected_expiry=expected_expiry):
+        for max_ttl, expected_expiry in max_ages_and_expected_expiries:
+            with self.subTest(max_ttl=max_ttl, expected_expiry=expected_expiry):
                 revision = self.create_revision()
 
                 link = WagtaildraftsharingLink.objects.get_or_create_for_revision(
-                    revision=revision, user=self.test_user, max_age=max_age
+                    revision=revision, user=self.test_user, max_ttl=max_ttl
                 )
 
                 assert link.active_until == expected_expiry, (
