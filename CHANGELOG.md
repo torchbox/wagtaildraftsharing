@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+---
+
+## [0.2.0] - 2025-03-028
+
 ### Added
 
 - Support for **Wagtail 6**, including a Stimulus JS controller to replace legacy JS. (@stevejalim)
