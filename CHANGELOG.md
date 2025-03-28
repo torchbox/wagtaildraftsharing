@@ -10,6 +10,7 @@
 - **Customizable position** for the draft sharing menu item. (@stevejalim)
 - **GitHub Actions CI** using `tox` and Python versions 3.9 to 3.12. (@stevejalim)
 - Add fallback handling if the Clipboard API is not available. (@mixxorz)
+- Add `X-Robots-Tag` header to prevent search engines from indexing draft sharing links. (@mixxorz)
 
 ### Changed
 
