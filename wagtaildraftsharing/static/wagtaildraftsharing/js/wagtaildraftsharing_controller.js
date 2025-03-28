@@ -11,6 +11,20 @@ const getJSONConfig = (name) => {
     return JSON.parse(config.textContent);
 }
 
+/**
+  * Show a message in the Wagtail messages area
+  *
+  * This is used as a fallback when the browser doesn't support the Clipboard
+  * API, when the user denies clipboard access, or when the site is accessed
+  * over HTTP (HTTPS is required to use the Clipboard API for some browsers).
+  **/
+const showDraftSharingUrl = (draftSharingUrl) => {
+  document.dispatchEvent(new CustomEvent('w-messages:add', {
+    detail: {clear: true, text: 'Draft sharing URL: ' + draftSharingUrl, type: 'success'}
+  }));
+  document.querySelector('[data-controller="w-messages"]').scrollIntoView();
+}
+
 const generateSharingLink = (button, revisionId, originalButtonText) => {
     const wagtailConfig = getJSONConfig('wagtail-config');
     const wagtaildraftsharingConfig = getJSONConfig('wagtaildraftsharing-config');
@@ -32,18 +46,27 @@ const generateSharingLink = (button, revisionId, originalButtonText) => {
         if (res.ok) {
             const data = await res.json();
             const url = window.location.origin + data.url;
+
             navigator.clipboard.writeText(url).then(() => {
                 button.textContent = 'Copied!';
                 setTimeout(() => {
                     button.textContent = originalButtonText;
                     button.disabled = false;
                 }, 3000);
-            })
+            }).catch((e) => {
+              button.textContent = "Created";
+
+              showDraftSharingUrl(url);
+
+              setTimeout(() => {
+                button.textContent = originalButtonText;
+                button.disabled = false;
+              }, 3000);
+            });
         } else {
             button.textContent = originalButtonText;
             button.disabled = false;
         }
-    }).finally(() => {
     });
 }
 
@@ -85,7 +108,13 @@ const addCopyLinksToClipboardTriggers = () => {
             setTimeout(() => {
                 link.textContent = 'Copy'
             }, 3000)
-        })
+        }).catch((e) => {
+            link.textContent = 'Draft sharing URL created'
+            showDraftSharingUrl(url)
+            setTimeout(() => {
+                link.textContent = 'Copy'
+            }, 3000)
+        });
     }
 
     links.forEach(link => {
