@@ -32,6 +32,7 @@ classifiers = [
 testing = [
     "coverage[toml]",
     "tox",
+    "tox-gh-actions",
     "wagtail-factories",
     "freezegun==1.5.1",
 ]

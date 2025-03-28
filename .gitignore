@@ -75,3 +75,5 @@ dist/
 
 # IDEs
 .idea/
+.vim
+.nvimrc
