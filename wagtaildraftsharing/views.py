@@ -33,6 +33,11 @@ class SharingLinkView(PreviewRevision):
     def get_object(self):
         return get_object_or_404(Page, id=self.pk).specific
 
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        response["X-Robots-Tag"] = "noindex, nofollow"
+        return response
+
 
 @method_decorator(user_passes_test(user_has_any_page_permission), name="dispatch")
 class CreateSharingLinkView(CreateView):

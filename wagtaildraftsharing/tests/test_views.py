@@ -185,3 +185,15 @@ class SharingLinkViewTests(TestCase):
         request = self.factory.get(f"/{sharing_link.key}/")
         with self.assertRaises(Http404):
             SharingLinkView.as_view()(request, key=sharing_link.key)
+
+    def test_sharing_link_includes_robots_header(self):
+        revision = self.create_revision()
+        sharing_link = WagtaildraftsharingLink.objects.create(
+            revision=revision, created_by=self.superuser
+        )
+
+        request = self.factory.get(f"/{sharing_link.key}/")
+        response = SharingLinkView.as_view()(request, key=sharing_link.key)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["X-Robots-Tag"], "noindex, nofollow")
