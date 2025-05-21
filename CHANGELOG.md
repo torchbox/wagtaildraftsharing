@@ -2,13 +2,17 @@
 
 ## [Unreleased]
 
+---
+
+## [0.3.0] - 2025-05-21
+
 ### Changed
 
 - Remove the ability to change which revision is shared on the draft sharing link edit page. (@mixxorz)
 
 ---
 
-## [0.2.0] - 2025-03-028
+## [0.2.0] - 2025-03-28
 
 ### Added
 
