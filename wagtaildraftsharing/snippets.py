@@ -1,3 +1,4 @@
+from wagtail.admin.panels import FieldPanel, ObjectList
 from wagtail.snippets.views.snippets import SnippetViewSet
 
 from wagtaildraftsharing.models import WagtaildraftsharingLink
@@ -14,6 +15,24 @@ class WagtaildraftsharingLinkSnippetViewSet(SnippetViewSet):
     add_to_admin_menu = True
     list_display = ("__str__", "is_active", "created_by", "share_url")
     list_filter = ("is_active",)
+
+    edit_handler = ObjectList([
+        FieldPanel("revision", read_only=True),
+        FieldPanel(
+            "is_active",
+            help_text=(
+                "When false, the sharing link will not be viewable."
+            )
+        ),
+        FieldPanel(
+            "active_until",
+            help_text=(
+                "The link will not be viewable after this date. "
+                "Leave blank if the link should never expire."
+            )
+        ),
+    ])
+
 
     def get_queryset(self, request):
         return WagtaildraftsharingLink.objects.all().prefetch_related(
