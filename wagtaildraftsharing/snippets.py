@@ -2,9 +2,15 @@ from wagtail.admin.panels import FieldPanel, ObjectList
 from wagtail.snippets.views.snippets import SnippetViewSet
 
 from wagtaildraftsharing.models import WagtaildraftsharingLink
+from wagtail.permission_policies import ModelPermissionPolicy
 
 from .settings import settings as draftsharing_settings
 
+class NoAddPermissionPolicy(ModelPermissionPolicy):
+    def user_has_permission(self, user, action):
+        if action == 'add':
+            return False
+        return super().user_has_permission(user, action)
 
 class WagtaildraftsharingLinkSnippetViewSet(SnippetViewSet):
     model = WagtaildraftsharingLink
@@ -15,6 +21,9 @@ class WagtaildraftsharingLinkSnippetViewSet(SnippetViewSet):
     add_to_admin_menu = True
     list_display = ("__str__", "is_active", "created_by", "share_url")
     list_filter = ("is_active",)
+
+    # Use custom permission policy so adding from this view is disabled
+    permission_policy = NoAddPermissionPolicy(WagtaildraftsharingLink)
 
     edit_handler = ObjectList([
         FieldPanel("revision", read_only=True),
@@ -32,7 +41,6 @@ class WagtaildraftsharingLinkSnippetViewSet(SnippetViewSet):
             )
         ),
     ])
-
 
     def get_queryset(self, request):
         return WagtaildraftsharingLink.objects.all().prefetch_related(
