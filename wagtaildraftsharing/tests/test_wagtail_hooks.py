@@ -1,7 +1,6 @@
 import json
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
-import wagtail
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
@@ -11,36 +10,15 @@ from wagtaildraftsharing import wagtail_hooks
 class WagtailHooksTests(TestCase):
     def test_editor_js(self):
         self.maxDiff = None
-        for wagtail_version, expected in (
-            (
-                "5.0.0",  # only major version matters
-                # Whitespace here is horrible. TODO: improve
-                f"""<script src="/static/wagtaildraftsharing/js/wagtaildraftsharing.js"></script>
+        expected = f"""<script type="module" src="/static/wagtaildraftsharing/js/wagtaildraftsharing_controller.js"></script>
         <script id="wagtaildraftsharing-config" type="application/json">
             {json.dumps({
                 'urls': {
                     'create': reverse('wagtaildraftsharing:create'),
                 },
             })}
-        </script>""",  # NOQA: E501
-            ),
-            (
-                "6.0.0",  # only major version matters
-                # Whitespace here is horrible. TODO: improve
-                f"""<script type="module" src="/static/wagtaildraftsharing/js/wagtaildraftsharing_controller.js"></script>
-        <script id="wagtaildraftsharing-config" type="application/json">
-            {json.dumps({
-                'urls': {
-                    'create': reverse('wagtaildraftsharing:create'),
-                },
-            })}
-        </script>""",  # NOQA: E501
-            ),
-        ):
-            with self.subTest(wagtail_version=wagtail_version, expected=expected):
-                with patch.object(wagtail, "__version__", wagtail_version):
-                    js_tags = wagtail_hooks.editor_js()
-                    self.assertEqual(js_tags, expected)
+        </script>"""  # NOQA: E501
+        self.assertEqual(wagtail_hooks.editor_js(), expected)
 
     def test_action_menu_hook__get_context_data(self):
         req = RequestFactory().get("/path/is/not/relevant/")

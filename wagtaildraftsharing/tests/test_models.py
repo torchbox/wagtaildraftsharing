@@ -1,8 +1,6 @@
 import datetime
-from textwrap import dedent
 from unittest.mock import patch
 
-import wagtail
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils.timezone import is_aware
@@ -166,33 +164,16 @@ class TestWagtaildraftsharingLinkModel(TestCase):
         expected_url = f"/wagtaildraftsharing/{link.key}/"
         self.assertEqual(link.url, expected_url)
 
-    @patch.object(wagtail, "__version__", "5.0.0")  # only first digit matters
-    def test_share_url_method__wagtail_5(self):
+    def test_share_url_method(self):
         link = WagtaildraftsharingLink.objects.create(
             revision=self.create_revision(),
         )
-        expected = dedent(
-            f"""<a
-                class="button button-secondary button-small"
-                data-wagtaildraftsharing-url
-                target="_blank"
-                rel="noopener noreferrer"
-                href="/wagtaildraftsharing/{link.key}/">View</a>"""
+        expected = (
+            f'<a\n            class="button button-secondary button-small"\n'
+            f'            data-controller="wagtaildraftsharing"\n'
+            f"            data-wagtaildraftsharing-snippet-url\n"
+            f'            target="_blank"\n'
+            f'            rel="noopener noreferrer"\n'
+            f'            href="/wagtaildraftsharing/{link.key}/">View</a>'
         )
-        self.assertEqual(dedent(link.share_url), expected)
-
-    @patch.object(wagtail, "__version__", "6.0.0")  # only first digit matters
-    def test_share_url_method__wagtail_6(self):
-        link = WagtaildraftsharingLink.objects.create(
-            revision=self.create_revision(),
-        )
-        expected = dedent(
-            f"""<a
-                class="button button-secondary button-small"
-                data-controller="wagtaildraftsharing"
-                data-wagtaildraftsharing-snippet-url
-                target="_blank"
-                rel="noopener noreferrer"
-                href="/wagtaildraftsharing/{link.key}/">View</a>"""
-        )
-        self.assertEqual(dedent(link.share_url), expected)
+        self.assertEqual(link.share_url, expected)
