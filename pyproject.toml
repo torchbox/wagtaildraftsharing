@@ -39,7 +39,7 @@ testing = [
     "tox",
     "tox-gh-actions",
     "wagtail-factories",
-    "freezegun==1.5.1",
+    "freezegun>=1.5,<2",
 ]
 
 [project.urls]
