@@ -1,6 +1,5 @@
 import json
 
-import wagtail
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.html import format_html
@@ -23,18 +22,9 @@ hooks.register("register_log_actions")(register_wagtaildraftsharing_log_actions)
 
 @hooks.register("insert_global_admin_js")
 def editor_js():
-    # We need different approaches to the JS depending on whether it's
-    # Wagtail 5 (vanilla JS) or Wagtail 6 (Stimulus)
-    if int(wagtail.__version__[0]) < 6:
-        SHARING_JS_TEMPLATE = """<script src="{}"></script>"""
-        SHARING_JS_PATH = "wagtaildraftsharing/js/wagtaildraftsharing.js"
-    else:
-        SHARING_JS_TEMPLATE = """<script type="module" src="{}"></script>"""
-        SHARING_JS_PATH = "wagtaildraftsharing/js/wagtaildraftsharing_controller.js"
-
     return format_html(
-        SHARING_JS_TEMPLATE,
-        static(SHARING_JS_PATH),
+        """<script type="module" src="{}"></script>""",
+        static("wagtaildraftsharing/js/wagtaildraftsharing_controller.js"),
     ) + mark_safe(
         f"""
         <script id="wagtaildraftsharing-config" type="application/json">
