@@ -1,6 +1,5 @@
 import uuid
 
-import wagtail
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -138,20 +137,12 @@ class WagtaildraftsharingLink(models.Model):
     def share_url(self):
         # Make the existing link easily shareable.
         # Also note that the View button is changed into a "Copy" button via JS
-        if int(wagtail.__version__[0]) < 6:
-            template = """<a
-                class="button button-secondary button-small"
-                data-wagtaildraftsharing-url
-                target="_blank"
-                rel="noopener noreferrer"
-                href="{}">View</a>"""
-        else:
-            template = """<a
-                class="button button-secondary button-small"
-                data-controller="wagtaildraftsharing"
-                data-wagtaildraftsharing-snippet-url
-                target="_blank"
-                rel="noopener noreferrer"
-                href="{}">View</a>"""
+        template = """<a
+            class="button button-secondary button-small"
+            data-controller="wagtaildraftsharing"
+            data-wagtaildraftsharing-snippet-url
+            target="_blank"
+            rel="noopener noreferrer"
+            href="{}">View</a>"""
 
         return format_html(template, self.url)

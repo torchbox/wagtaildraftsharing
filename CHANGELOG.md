@@ -2,6 +2,25 @@
 
 ## [Unreleased]
 
+### Added
+
+- Support for Wagtail 7.0 LTS, 7.3, and 7.4 LTS.
+- Support for Django 5.2 LTS and 6.0.
+- Support for Python 3.13 and 3.14.
+
+### Changed
+
+- Bump minimum supported Python to 3.10.
+- Bump minimum supported Wagtail to 7.0 (drops Wagtail 5.x and 6.x).
+- Drop Wagtail 7.1 and 7.2 from the support matrix (both have reached end of life).
+- Drop Django 5.1 from claims and CI matrix (Django 5.1 reached end of life April 2025).
+
+### Removed
+
+- Removed Wagtail <6 compatibility branches in `wagtail_hooks.py` and `models.py`.
+- Removed legacy vanilla-JS asset `wagtaildraftsharing/js/wagtaildraftsharing.js` (used only on Wagtail <6).
+- Removed legacy `wagtailadmin/pages/revisions/_actions.html` template override (path no longer exists in Wagtail 7).
+
 ---
 
 ## [0.3.0] - 2025-05-21
