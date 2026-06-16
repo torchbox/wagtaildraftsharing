@@ -10,6 +10,7 @@ from django.utils.timezone import now as timezone_now
 from wagtail_factories import PageFactory
 
 from wagtaildraftsharing.models import WagtaildraftsharingLink
+from wagtaildraftsharing.snippets import WagtaildraftsharingLinkSnippetViewSet
 from wagtaildraftsharing.views import CreateSharingLinkView, SharingLinkView
 
 User = get_user_model()
@@ -197,3 +198,27 @@ class SharingLinkViewTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["X-Robots-Tag"], "noindex, nofollow")
+
+
+class WagtaildraftsharingLinkSnippetAdminViewTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.superuser = User.objects.create_superuser(
+            username="admin",
+            password="test",
+        )
+
+    def test_snippet_list_does_not_show_add_button_for_superuser(self):
+        # Superusers would normally be allowed to add snippets, but our
+        # custom permission policy should disable the "Add" action.
+        self.client.login(username="admin", password="test")
+
+        viewset = WagtaildraftsharingLinkSnippetViewSet()
+        list_url = reverse(viewset.get_url_name("list"))
+
+        response = self.client.get(list_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "Add Draftsharing Link")
+        # Occasionally the "Add Sharing Link" pops up too...
+        self.assertNotContains(response, "Add Sharing Link")
